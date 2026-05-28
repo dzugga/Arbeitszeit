@@ -807,7 +807,7 @@ window.editTour=function(tourId){
   document.getElementById('edit-tour-id').value=tourId;
   document.getElementById('edit-tour-name').value=t.name;
   document.getElementById('edit-tour-date').value=t.date;
-  const opts=projects.map(p=>`<option value="${p.id}"${p.id===t.projectId?' selected':'')}>${p.name}</option>`).join('');
+  const opts=projects.map(p=>`<option value="${p.id}"${p.id===t.projectId?' selected':''}>${p.name}</option>`).join('');
   document.getElementById('edit-tour-proj').innerHTML='<option value="">— Kein Projekt —</option>'+opts;
   renderEditEntries(editEntriesBuffer);
   document.getElementById('edit-modal').style.display='flex';
