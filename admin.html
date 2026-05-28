@@ -264,16 +264,16 @@ function populateFilters(){
 async function loadDashboard(){
   const today=todayKey();
   let todayTours=[];
-  const workers=allUsers.filter(u=>u.role!=='admin');
-  document.getElementById('d-users').textContent=workers.length;
+  // Alle User inkl. Admin abfragen
+  const allUsersIncAdmin=allUsers;
+  document.getElementById('d-users').textContent=allUsers.filter(u=>u.role!=='admin').length;
   document.getElementById('d-projects').textContent=allProjects.length;
 
-  for(const u of workers){
+  for(const u of allUsersIncAdmin){
     try{
-      // Nur nach Datum filtern — kein zusammengesetzter Index nötig
       const snap=await getDocs(query(collection(db,'users',u.id,'tours'),where('date','==',today)));
       const tours=snap.docs.map(d=>({id:d.id,...d.data(),userName:u.name||u.email}))
-        .filter(t=>t.archived!==true); // archived kann undefined sein
+        .filter(t=>t.archived!==true);
       todayTours.push(...tours);
     }catch(e){console.warn('Tour-Abfrage für',u.email,'fehlgeschlagen:',e);}
   }
@@ -289,8 +289,7 @@ async function loadDashboard(){
   } else {
     todayTours.sort((a,b)=>(b.startTime||'').localeCompare(a.startTime||''));
     dt.innerHTML=todayTours.map(t=>{
-      const th=Math.floor((t.dur||0)/3600),tm=Math.floor(((t.dur||0)%3600)/60),ts=(t.dur||0)%60;
-      const dur=th>0?th+'h '+tm+'m '+ts+'s':tm>0?tm+'m '+ts+'s':ts+'s';
+      const dur=fmtDur(t.dur||0);
       const startT=t.startTime?new Date(t.startTime).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}):'—';
       return`<div class="tour-row">
         <div class="tour-row-top">
@@ -361,7 +360,7 @@ window.loadTours=async function(){
   const from=document.getElementById('t-from').value,to=document.getElementById('t-to').value;
   const userId=document.getElementById('t-user').value,projId=document.getElementById('t-proj').value;
   allTours=[];
-  const workers=userId?allUsers.filter(u=>u.id===userId):allUsers.filter(u=>u.role!=='admin');
+  const workers=userId?allUsers.filter(u=>u.id===userId):allUsers; // alle inkl. Admin
   for(const u of workers){
     try{
       const snap=await getDocs(query(collection(db,'users',u.id,'tours'),where('date','>=',from),where('date','<=',to)));
@@ -409,7 +408,7 @@ window.exportToursCSV=function(){
 window.loadArchive=async function(){
   const userId=document.getElementById('ar-user').value;
   archiveTours=[];
-  const workers=userId?allUsers.filter(u=>u.id===userId):allUsers.filter(u=>u.role!=='admin');
+  const workers=userId?allUsers.filter(u=>u.id===userId):allUsers; // alle inkl. Admin
   for(const u of workers){
     const snap=await getDocs(query(collection(db,'users',u.id,'tours'),where('archived','==',true)));
     archiveTours.push(...snap.docs.map(d=>({id:d.id,...d.data(),userName:u.name||u.email,userId:u.id})));
