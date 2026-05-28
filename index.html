@@ -34,7 +34,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 /* HEADER */
 .header{display:flex;align-items:center;justify-content:space-between;padding:max(14px,env(safe-area-inset-top)) 16px 6px;flex-shrink:0;background:var(--bg)}
 .header h1{font-size:18px;font-weight:600}
-.header-right{display:flex;align-items:center;gap:8px}
 .user-badge{font-size:11px;color:var(--muted);background:var(--bg3);padding:4px 10px;border-radius:20px;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .logout-btn{background:none;border:none;color:var(--muted);cursor:pointer;padding:4px}
 
@@ -51,11 +50,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 .panel-map{padding:0!important;gap:0!important}
 
 /* TOUR BANNER */
-.tour-banner{background:rgba(124,111,247,.1);border:1px solid var(--accent);border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:10px}
-.tour-banner-info{flex:1}
-.tour-banner-name{font-size:13px;font-weight:600;color:var(--accent)}
-.tour-banner-proj{font-size:11px;color:var(--muted);margin-top:1px}
-.tour-end-btn{background:#2a1a1a;border:1px solid var(--red);color:var(--red);border-radius:8px;padding:7px 12px;font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap}
+.tour-banner{background:rgba(124,111,247,.1);border:1.5px solid var(--accent);border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:10px}
+.tour-banner-name{font-size:14px;font-weight:600;color:var(--accent)}
+.tour-banner-proj{font-size:11px;color:var(--muted);margin-top:2px}
+.tour-end-btn{background:#2a1a1a;border:1px solid var(--red);color:var(--red);border-radius:9px;padding:8px 13px;font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;margin-left:auto}
 
 /* METRICS */
 .metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
@@ -90,16 +88,15 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 .t-entry{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:9px;background:var(--bg3);font-size:12px}
 .t-time{color:var(--muted);min-width:40px;font-family:'DM Mono',monospace;font-size:11px}
 .t-name{flex:1;font-weight:500}
-.t-proj{font-size:10px;color:var(--muted);background:var(--bg2);padding:2px 6px;border-radius:5px;white-space:nowrap;max-width:80px;overflow:hidden;text-overflow:ellipsis}
-.t-dur{color:var(--muted);font-family:'DM Mono',monospace;font-size:11px;margin-left:2px}
+.t-dur{color:var(--muted);font-family:'DM Mono',monospace;font-size:11px}
 .t-del{background:none;border:none;color:var(--muted);cursor:pointer;padding:2px 5px;font-size:16px}
 .no-data{text-align:center;padding:16px;color:var(--muted);font-size:13px}
 .section-title{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.8px}
 .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px 14px}
 
-/* START TOUR MODAL */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500;display:flex;align-items:flex-end;justify-content:center}
-.modal{background:var(--bg2);border:1px solid var(--border);border-radius:20px 20px 0 0;padding:20px;width:100%;max-width:480px;display:flex;flex-direction:column;gap:12px}
+/* MODALS */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;display:flex;align-items:flex-end;justify-content:center}
+.modal{background:var(--bg2);border:1px solid var(--border);border-top-left-radius:20px;border-top-right-radius:20px;padding:20px;width:100%;max-width:480px;display:flex;flex-direction:column;gap:12px;max-height:80vh;overflow-y:auto}
 .modal h3{font-size:16px;font-weight:600}
 .modal-label{font-size:11px;color:var(--muted);margin-bottom:4px}
 .modal select{width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg3);color:var(--text);font-family:var(--font);font-size:14px}
@@ -108,30 +105,41 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 .modal-btns button{flex:1;padding:12px;border-radius:10px;font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;border:none}
 .modal-cancel{background:var(--bg3);color:var(--muted)}
 .modal-start{background:var(--accent2);color:#fff}
-
-/* TOUR END MODAL */
-.tour-summary{background:var(--bg3);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px}
-.tour-summary-row{display:flex;justify-content:space-between;font-size:13px}
-.tour-summary-row span:first-child{color:var(--muted)}
-.tour-summary-row span:last-child{font-weight:500;font-family:'DM Mono',monospace}
+.modal-finish{background:#1D9E75;color:#fff}
+.tour-summary{background:var(--bg3);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:7px}
+.ts-row{display:flex;justify-content:space-between;font-size:13px}
+.ts-row span:first-child{color:var(--muted)}
+.ts-row span:last-child{font-weight:500}
+.ts-acts{display:flex;flex-direction:column;gap:4px;margin-top:4px}
+.ts-act{display:flex;align-items:center;gap:8px;font-size:12px}
 
 /* MAP */
 #map{flex:1;min-height:0;z-index:1}
-.map-toolbar{display:flex;gap:8px;padding:10px 12px;background:var(--bg2);border-top:1px solid var(--border);flex-shrink:0;align-items:center}
-.map-info{font-size:12px;color:var(--muted);flex:1}
-.map-btn{background:var(--card);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:7px 12px;font-size:12px;font-family:var(--font);cursor:pointer}
+.map-toolbar{display:flex;gap:6px;padding:10px 12px;background:var(--bg2);border-top:1px solid var(--border);flex-shrink:0;align-items:center;flex-wrap:wrap}
+.map-info{font-size:12px;color:var(--muted);flex:1;min-width:80px}
+.map-btn{background:var(--card);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:6px 11px;font-size:12px;font-family:var(--font);cursor:pointer}
+.map-select{background:var(--card);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:6px 10px;font-size:12px;font-family:var(--font);flex:1;max-width:200px}
 .leaflet-tile{filter:brightness(0.7) saturate(0.8) hue-rotate(180deg) invert(1)}
 .leaflet-container{background:#111825}
 .leaflet-control-zoom a{background:var(--card)!important;color:var(--text)!important;border-color:var(--border)!important}
-.leaflet-popup-content-wrapper{background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:10px}
+.leaflet-popup-content-wrapper{background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:10px;font-family:var(--font);font-size:13px}
 .leaflet-popup-tip{background:var(--card)}
+/* MAP LEGEND */
+.map-legend{position:absolute;bottom:60px;right:10px;z-index:10;background:rgba(15,15,26,.9);border:1px solid var(--border);border-radius:10px;padding:8px 10px;font-size:11px;display:flex;flex-direction:column;gap:4px;max-width:140px}
+.legend-row{display:flex;align-items:center;gap:6px}
+.legend-line{width:24px;height:3px;border-radius:2px;flex-shrink:0}
 
 /* REPORT */
-.r-table{width:100%;border-collapse:collapse;font-size:12px}
-.r-table th{text-align:left;padding:6px 8px;border-bottom:1px solid var(--border);font-weight:500;color:var(--muted);font-size:11px;text-transform:uppercase}
-.r-table td{padding:7px 8px;border-bottom:1px solid var(--border);vertical-align:middle}
-.r-bar-wrap{background:var(--bg3);border-radius:3px;height:3px;margin-top:3px;overflow:hidden}
-.r-bar{height:3px;border-radius:3px}
+.tour-card{background:var(--bg3);border-radius:12px;padding:12px;cursor:pointer;border:1px solid transparent}
+.tour-card:active{border-color:var(--accent)}
+.tour-card-top{display:flex;justify-content:space-between;align-items:flex-start}
+.tour-card-name{font-size:14px;font-weight:600}
+.tour-card-time{font-size:13px;font-family:'DM Mono',monospace;color:var(--accent)}
+.tour-card-sub{font-size:11px;color:var(--muted);margin-top:3px}
+.tour-detail{background:var(--bg2);border-radius:10px;padding:10px;margin-top:8px;display:none;flex-direction:column;gap:6px}
+.tour-detail.open{display:flex}
+.td-row{display:flex;align-items:center;gap:8px;font-size:12px;padding:5px 0;border-bottom:1px solid var(--border)}
+.td-row:last-child{border-bottom:none}
 
 /* SETTINGS */
 .act-edit{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:10px;background:var(--bg3)}
@@ -147,7 +155,6 @@ input[type=date]{padding:8px 10px;border-radius:10px;border:1px solid var(--bord
 </style>
 </head>
 <body>
-
 <div id="loading"><div class="spinner"></div><div style="font-size:13px;color:var(--muted)">Laden...</div></div>
 
 <div id="login-screen" style="display:none">
@@ -167,7 +174,7 @@ input[type=date]{padding:8px 10px;border-radius:10px;border:1px solid var(--bord
   <div class="modal">
     <h3>Neue Tour starten</h3>
     <div>
-      <div class="modal-label">Tour-Bezeichnung</div>
+      <div class="modal-label">Tour-Bezeichnung *</div>
       <input class="inp" type="text" id="tour-name-inp" placeholder="z.B. Kunde Müller, Montage Halle 3...">
     </div>
     <div>
@@ -176,7 +183,7 @@ input[type=date]{padding:8px 10px;border-radius:10px;border:1px solid var(--bord
     </div>
     <div class="modal-btns">
       <button class="modal-cancel" onclick="closeTourModal()">Abbrechen</button>
-      <button class="modal-start" onclick="confirmStartTour()">Tour starten</button>
+      <button class="modal-start" onclick="confirmStartTour()">▶ Tour starten</button>
     </div>
   </div>
 </div>
@@ -184,11 +191,11 @@ input[type=date]{padding:8px 10px;border-radius:10px;border:1px solid var(--bord
 <!-- END TOUR MODAL -->
 <div class="modal-overlay" id="end-modal" style="display:none">
   <div class="modal">
-    <h3>Tour abschließen?</h3>
+    <h3>Tour abschließen</h3>
     <div class="tour-summary" id="end-summary"></div>
     <div class="modal-btns">
       <button class="modal-cancel" onclick="document.getElementById('end-modal').style.display='none'">Weiter erfassen</button>
-      <button class="modal-start" style="background:#1D9E75" onclick="confirmEndTour()">Tour abschließen</button>
+      <button class="modal-finish" onclick="confirmEndTour()">✓ Abschließen & speichern</button>
     </div>
   </div>
 </div>
@@ -196,7 +203,7 @@ input[type=date]{padding:8px 10px;border-radius:10px;border:1px solid var(--bord
 <div class="app" id="main-app" style="display:none">
   <div class="header">
     <h1>Arbeitszeit</h1>
-    <div class="header-right">
+    <div style="display:flex;align-items:center;gap:8px">
       <span class="user-badge" id="user-badge">—</span>
       <button class="logout-btn" onclick="doLogout()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="18" height="18" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
@@ -207,60 +214,72 @@ input[type=date]{padding:8px 10px;border-radius:10px;border:1px solid var(--bord
   <div class="panels">
     <!-- ERFASSUNG -->
     <div class="panel active" id="panel-tracking">
-      <!-- Tour Banner (wenn aktiv) -->
-      <div id="tour-banner" style="display:none" class="tour-banner">
-        <div class="tour-banner-info">
-          <div class="tour-banner-name" id="tour-banner-name">—</div>
-          <div class="tour-banner-proj" id="tour-banner-proj"></div>
-        </div>
-        <button class="tour-end-btn" onclick="showEndTour()">Tour beenden</button>
-      </div>
-
-      <!-- Kein Tour aktiv -->
-      <div id="no-tour-banner" class="card" style="text-align:center;padding:18px">
-        <div style="font-size:13px;color:var(--muted);margin-bottom:10px">Keine aktive Tour</div>
-        <button class="btn btn-accent" onclick="showStartTour()" style="width:100%;justify-content:center;font-size:14px;padding:12px">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="16" height="16" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-          Tour starten
-        </button>
-      </div>
-
-      <div class="metrics">
-        <div class="metric"><div class="metric-label">Tour-Zeit</div><div class="metric-value" id="m-work">0:00</div></div>
-        <div class="metric"><div class="metric-label">km</div><div class="metric-value" id="m-km">0.0</div></div>
-        <div class="metric"><div class="metric-label">Stopps</div><div class="metric-value" id="m-stops">0</div></div>
-      </div>
-
-      <div id="status-bar" class="status">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="16" height="16"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        Keine Aufzeichnung aktiv
-      </div>
-
-      <div class="card" id="act-card" style="display:none">
-        <div class="section-title" style="margin-bottom:10px">Tätigkeit</div>
-        <div class="act-grid" id="act-grid"></div>
-        <div class="btn-row" style="margin-top:10px">
-          <button class="btn btn-stop" id="btn-stop" onclick="stopActivity()" disabled>
-            <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>Stopp
-          </button>
-          <button class="btn btn-pin" onclick="pinLocation()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="14" height="14" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Pin
+      <!-- STATE A: Keine Tour -->
+      <div id="state-no-tour">
+        <div style="text-align:center;padding:32px 16px;display:flex;flex-direction:column;align-items:center;gap:16px">
+          <div style="width:60px;height:60px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--muted)" width="28" height="28" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div>
+            <div style="font-size:16px;font-weight:600;margin-bottom:6px">Keine aktive Tour</div>
+            <div style="font-size:13px;color:var(--muted)">Starte eine Tour um mit der Erfassung zu beginnen</div>
+          </div>
+          <button class="btn btn-accent" onclick="showStartTour()" style="width:100%;justify-content:center;font-size:15px;padding:14px;border-radius:12px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="16" height="16" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>Tour starten
           </button>
         </div>
       </div>
 
-      <div class="card">
-        <div class="section-title" style="margin-bottom:8px">Heutige Einträge</div>
-        <div class="timeline" id="timeline"></div>
+      <!-- STATE B: Tour aktiv -->
+      <div id="state-active-tour" style="display:none;flex-direction:column;gap:10px">
+        <div class="tour-banner">
+          <div style="flex:1">
+            <div class="tour-banner-name" id="tour-banner-name">—</div>
+            <div class="tour-banner-proj" id="tour-banner-proj"></div>
+          </div>
+          <button class="tour-end-btn" onclick="showEndTour()">Tour beenden</button>
+        </div>
+
+        <div class="metrics">
+          <div class="metric"><div class="metric-label">Tour-Zeit</div><div class="metric-value" id="m-work">0:00</div></div>
+          <div class="metric"><div class="metric-label">km</div><div class="metric-value" id="m-km">0.0</div></div>
+          <div class="metric"><div class="metric-label">Stopps</div><div class="metric-value" id="m-stops">0</div></div>
+        </div>
+
+        <div id="status-bar" class="status">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="16" height="16"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Tätigkeit wählen
+        </div>
+
+        <div class="card">
+          <div class="section-title" style="margin-bottom:10px">Tätigkeit</div>
+          <div class="act-grid" id="act-grid"></div>
+          <div class="btn-row" style="margin-top:10px">
+            <button class="btn btn-stop" id="btn-stop" onclick="stopActivity()" disabled>
+              <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>Stopp
+            </button>
+            <button class="btn btn-pin" onclick="pinLocation()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="14" height="14" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Pin
+            </button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-title" style="margin-bottom:8px">Einträge dieser Tour</div>
+          <div class="timeline" id="timeline"></div>
+        </div>
       </div>
     </div>
 
     <!-- KARTE -->
     <div class="panel panel-map" id="panel-map">
-      <div id="map"></div>
+      <div id="map" style="flex:1;min-height:0"></div>
+      <div id="map-legend" class="map-legend" style="display:none"></div>
       <div class="map-toolbar">
-        <div class="map-info" id="map-info">Keine GPS-Daten</div>
-        <button class="map-btn" onclick="centerMap()">⊕ Zentrieren</button>
+        <select class="map-select" id="map-tour-sel" onchange="renderMapTour()">
+          <option value="current">Aktuelle Tour</option>
+        </select>
+        <button class="map-btn" onclick="centerMap()">⊕</button>
       </div>
     </div>
 
@@ -278,12 +297,9 @@ input[type=date]{padding:8px 10px;border-radius:10px;border:1px solid var(--bord
       <div class="metrics">
         <div class="metric"><div class="metric-label">Touren</div><div class="metric-value" id="r-tours">—</div></div>
         <div class="metric"><div class="metric-label">Stunden</div><div class="metric-value" id="r-total">—</div></div>
-        <div class="metric"><div class="metric-label">Einträge</div><div class="metric-value" id="r-entries">—</div></div>
+        <div class="metric"><div class="metric-label">km</div><div class="metric-value" id="r-km">—</div></div>
       </div>
-      <div class="card">
-        <div class="section-title" style="margin-bottom:10px">Touren</div>
-        <div id="report-body"></div>
-      </div>
+      <div id="report-list" style="display:flex;flex-direction:column;gap:8px"></div>
     </div>
 
     <!-- EINSTELLUNGEN -->
@@ -295,10 +311,7 @@ input[type=date]{padding:8px 10px;border-radius:10px;border:1px solid var(--bord
         <div class="color-row" id="color-row" style="margin-bottom:10px"></div>
         <button class="btn btn-accent" onclick="addActivity()" style="width:100%;justify-content:center">+ Tätigkeit hinzufügen</button>
       </div>
-      <div class="card">
-        <div class="section-title" style="margin-bottom:6px">Info</div>
-        <div style="font-size:12px;color:var(--muted);line-height:1.6">Projekte werden vom Admin verwaltet. Karte: © OpenStreetMap.</div>
-      </div>
+      <div class="card" style="font-size:12px;color:var(--muted);line-height:1.6">Projekte werden vom Admin verwaltet. Karte: © OpenStreetMap-Mitwirkende.</div>
     </div>
   </div>
 
@@ -322,7 +335,7 @@ input[type=date]{padding:8px 10px;border-radius:10px;border:1px solid var(--bord
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import { getFirestore, collection, doc, addDoc, getDocs, setDoc, updateDoc, deleteDoc, query, where, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getFirestore, collection, doc, addDoc, getDocs, updateDoc, deleteDoc, query, where } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 const firebaseConfig={apiKey:"AIzaSyAaE6IXHg3NhCx0qtv60n-DF3zJOKjDGDo",authDomain:"arbeitszeit-171a4.firebaseapp.com",projectId:"arbeitszeit-171a4",storageBucket:"arbeitszeit-171a4.firebasestorage.app",messagingSenderId:"1041845504771",appId:"1:1041845504771:web:47fa99683880edd617b736"};
 const fbApp=initializeApp(firebaseConfig);
@@ -332,18 +345,19 @@ const db=getFirestore(fbApp);
 const COLORS=['#7c6ff7','#2ec9a0','#f07040','#d45090','#4a9ef7','#80b830','#c89030','#8888b0'];
 let map=null,routeLayer=null,pinLayer=null;
 let currentUser=null;
-let activities=[],projects=[],todayEntries=[],gpsPoints=[],pins=[];
+let activities=[],projects=[];
+// Active tour state (in memory + localStorage)
+let activeTour=null; // {id,name,projectId,projectName,startTime,entries[],gpsPoints[],pins[]}
 let currentActivity=null,currentStart=null,trackInterval=null,selectedColor=COLORS[0];
-// TOUR STATE
-let activeTour=null; // {id, name, projectId, projectName, startTime, entryIds[]}
+// Report
 let reportTours=[];
 
 function todayKey(){return new Date().toISOString().slice(0,10)}
+const LS_KEY=()=>'activeTour_'+(currentUser?currentUser.uid:'')
 
 // AUTH
 window.doLogin=async function(){
-  const email=document.getElementById('login-email').value.trim();
-  const pw=document.getElementById('login-pw').value;
+  const email=document.getElementById('login-email').value.trim(),pw=document.getElementById('login-pw').value;
   document.getElementById('login-err').textContent='';
   try{await signInWithEmailAndPassword(auth,email,pw);}
   catch(e){document.getElementById('login-err').textContent='Falsche E-Mail oder Passwort';}
@@ -368,25 +382,12 @@ onAuthStateChanged(auth,async user=>{
 });
 
 async function loadUserData(){
-  // Activities
   const aSnap=await getDocs(collection(db,'users',currentUser.uid,'activities'));
   activities=aSnap.docs.map(d=>({id:d.id,...d.data()}));
-  // Projects
   const pSnap=await getDocs(collection(db,'projects'));
   projects=pSnap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>a.name.localeCompare(b.name));
-  // Today entries (simple query, no composite index needed)
-  const eSnap=await getDocs(query(collection(db,'users',currentUser.uid,'entries'),where('date','==',todayKey())));
-  todayEntries=eSnap.docs.map(d=>({id:d.id,...d.data()})).filter(e=>!e.archived);
-  // Active tour from localStorage
-  const savedTour=localStorage.getItem('activeTour_'+currentUser.uid);
-  if(savedTour){activeTour=JSON.parse(savedTour);updateTourBanner();}
-  // GPS today
-  const gSnap=await getDocs(query(collection(db,'users',currentUser.uid,'gps'),where('date','==',todayKey())));
-  const allPts=[];gSnap.docs.forEach(d=>{const pts=d.data().points||[];allPts.push(...pts);});
-  gpsPoints=allPts.sort((a,b)=>a.ts.localeCompare(b.ts));
-  // Pins today
-  const pinSnap=await getDocs(query(collection(db,'users',currentUser.uid,'pins'),where('date','==',todayKey())));
-  pins=pinSnap.docs.map(d=>({id:d.id,...d.data()}));
+  // Restore active tour from localStorage
+  try{const s=localStorage.getItem(LS_KEY());if(s)activeTour=JSON.parse(s);}catch(e){}
 }
 
 // TABS
@@ -395,20 +396,32 @@ window.showTab=function(id){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('nav-'+id).classList.add('active');
   document.getElementById('panel-'+id).classList.add('active');
-  if(id==='map'){initMap();updateMap();}
+  if(id==='map'){initMap();renderMapTour();}
   if(id==='report'){initReportDates();loadReport();}
   if(id==='settings')renderSettings();
 };
 
 function renderAll(){
-  renderActivities();renderTimeline();updateMetrics();renderColorPick();
-  updateTourBanner();
-  // populate project selects
+  renderActivities();renderTimeline();updateMetrics();renderColorPick();updateTourUI();
   const opts=projects.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
   document.getElementById('tour-project-sel').innerHTML='<option value="">— Kein Projekt —</option>'+opts;
 }
 
-// TOUR
+// TOUR UI
+function updateTourUI(){
+  if(activeTour){
+    document.getElementById('state-no-tour').style.display='none';
+    document.getElementById('state-active-tour').style.display='flex';
+    document.getElementById('tour-banner-name').textContent=activeTour.name;
+    document.getElementById('tour-banner-proj').textContent=activeTour.projectName||'Kein Projekt';
+    if(activeTour.gpsPoints&&activeTour.gpsPoints.length>0&&!trackInterval)startGPS();
+  } else {
+    document.getElementById('state-no-tour').style.display='block';
+    document.getElementById('state-active-tour').style.display='none';
+  }
+}
+
+// START TOUR
 window.showStartTour=function(){
   document.getElementById('tour-name-inp').value='';
   document.getElementById('tour-modal').style.display='flex';
@@ -416,46 +429,43 @@ window.showStartTour=function(){
 };
 window.closeTourModal=function(){document.getElementById('tour-modal').style.display='none';};
 
-window.confirmStartTour=async function(){
+window.confirmStartTour=function(){
   const name=document.getElementById('tour-name-inp').value.trim();
   if(!name){alert('Bitte Tour-Bezeichnung eingeben.');return;}
   const projId=document.getElementById('tour-project-sel').value;
   const proj=projects.find(p=>p.id===projId);
-  activeTour={id:'t'+Date.now(),name,projectId:projId,projectName:proj?proj.name:'',startTime:new Date().toISOString(),entryIds:[],gpsDocIds:[]};
-  localStorage.setItem('activeTour_'+currentUser.uid,JSON.stringify(activeTour));
+  activeTour={id:'t'+Date.now(),name,projectId:projId,projectName:proj?proj.name:'',startTime:new Date().toISOString(),entries:[],gpsPoints:[],pins:[]};
+  localStorage.setItem(LS_KEY(),JSON.stringify(activeTour));
   document.getElementById('tour-modal').style.display='none';
-  updateTourBanner();
-  document.getElementById('act-card').style.display='block';
+  updateTourUI();renderActivities();
   startGPS();
 };
 
-function updateTourBanner(){
-  if(activeTour){
-    document.getElementById('tour-banner').style.display='flex';
-    document.getElementById('no-tour-banner').style.display='none';
-    document.getElementById('act-card').style.display='block';
-    document.getElementById('tour-banner-name').textContent=activeTour.name;
-    document.getElementById('tour-banner-proj').textContent=activeTour.projectName||'Kein Projekt';
-  } else {
-    document.getElementById('tour-banner').style.display='none';
-    document.getElementById('no-tour-banner').style.display='block';
-    document.getElementById('act-card').style.display='none';
-  }
-}
+function saveTourLocally(){localStorage.setItem(LS_KEY(),JSON.stringify(activeTour));}
 
+// END TOUR
 window.showEndTour=function(){
-  if(currentActivity)stopActivity();
+  if(currentActivity)stopActivitySilent();
   const dur=Math.round((new Date()-new Date(activeTour.startTime))/1000);
   const h=Math.floor(dur/3600),m=Math.floor((dur%3600)/60);
-  const km=totalKm(gpsPoints);
-  const tourEntries=todayEntries.filter(e=>activeTour.entryIds.includes(e.id));
+  const km=totalKm(activeTour.gpsPoints||[]);
+  // Build per-activity summary
+  const byAct={};
+  (activeTour.entries||[]).forEach(e=>{if(!byAct[e.activity])byAct[e.activity]={dur:0,color:e.color};byAct[e.activity].dur+=e.dur;});
+  const actRows=Object.entries(byAct).map(([name,v])=>{
+    const ah=Math.floor(v.dur/3600),am=Math.floor((v.dur%3600)/60),as2=v.dur%60;
+    const adur=ah>0?ah+'h'+am+'m':am>0?am+'m'+as2+'s':as2+'s';
+    return`<div class="ts-act"><span style="width:9px;height:9px;border-radius:50%;background:${v.color};flex-shrink:0"></span><span style="flex:1">${name}</span><span style="color:var(--muted);font-family:'DM Mono',monospace;font-size:11px">${adur}</span></div>`;
+  }).join('');
   document.getElementById('end-summary').innerHTML=`
-    <div class="tour-summary-row"><span>Tour</span><span>${activeTour.name}</span></div>
-    <div class="tour-summary-row"><span>Projekt</span><span>${activeTour.projectName||'—'}</span></div>
-    <div class="tour-summary-row"><span>Start</span><span>${new Date(activeTour.startTime).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})}</span></div>
-    <div class="tour-summary-row"><span>Dauer</span><span>${h}h ${m}m</span></div>
-    <div class="tour-summary-row"><span>Strecke</span><span>${km.toFixed(1)} km</span></div>
-    <div class="tour-summary-row"><span>Einträge</span><span>${tourEntries.length}</span></div>
+    <div class="ts-row"><span>Tour</span><span>${activeTour.name}</span></div>
+    <div class="ts-row"><span>Projekt</span><span>${activeTour.projectName||'—'}</span></div>
+    <div class="ts-row"><span>Start</span><span>${new Date(activeTour.startTime).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})}</span></div>
+    <div class="ts-row"><span>Dauer</span><span>${h}h ${m}m</span></div>
+    <div class="ts-row"><span>Strecke</span><span>${km.toFixed(1)} km</span></div>
+    <div class="ts-row"><span>GPS-Punkte</span><span>${(activeTour.gpsPoints||[]).length}</span></div>
+    <div class="ts-row"><span>Einträge</span><span>${(activeTour.entries||[]).length}</span></div>
+    ${actRows?`<div style="border-top:1px solid var(--border);padding-top:8px;margin-top:4px">${actRows}</div>`:''}
   `;
   document.getElementById('end-modal').style.display='flex';
 };
@@ -464,35 +474,41 @@ window.confirmEndTour=async function(){
   if(!activeTour)return;
   const endTime=new Date().toISOString();
   const dur=Math.round((new Date()-new Date(activeTour.startTime))/1000);
-  const km=totalKm(gpsPoints);
-  const tourEntries=todayEntries.filter(e=>activeTour.entryIds.includes(e.id));
-  // Save tour summary to Firestore
+  const km=totalKm(activeTour.gpsPoints||[]);
+  // Save full tour with all GPS data to Firestore
   await addDoc(collection(db,'users',currentUser.uid,'tours'),{
     name:activeTour.name,
-    projectId:activeTour.projectId,
-    projectName:activeTour.projectName,
+    projectId:activeTour.projectId||'',
+    projectName:activeTour.projectName||'',
     date:todayKey(),
     startTime:activeTour.startTime,
     endTime,
     dur,
     km:parseFloat(km.toFixed(2)),
-    entryCount:tourEntries.length,
-    entries:tourEntries.map(e=>({activity:e.activity,dur:e.dur,color:e.color})),
+    entries:activeTour.entries||[],
+    gpsPoints:activeTour.gpsPoints||[],
+    pins:activeTour.pins||[],
+    entryCount:(activeTour.entries||[]).length,
     userId:currentUser.uid,
     userEmail:currentUser.email,
     archived:false
   });
-  // Mark entries with tourId
-  await Promise.all(activeTour.entryIds.map(id=>updateDoc(doc(db,'users',currentUser.uid,'entries',id),{tourName:activeTour.name,tourId:activeTour.id})));
-  // Clear
+  // CLEAR everything
   activeTour=null;
-  localStorage.removeItem('activeTour_'+currentUser.uid);
+  localStorage.removeItem(LS_KEY());
+  currentActivity=null;currentStart=null;
   stopGPS();
-  gpsPoints=[];pins=[];
+  document.getElementById('btn-stop').disabled=true;
+  document.getElementById('status-bar').className='status';
+  document.getElementById('status-bar').innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="16" height="16"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Tätigkeit wählen`;
   document.getElementById('end-modal').style.display='none';
-  updateTourBanner();
-  renderTimeline();updateMetrics();
-  alert('Tour abgeschlossen und gespeichert!');
+  updateTourUI();
+  renderActivities();
+  renderTimeline();
+  updateMetrics();
+  // Update map tour selector
+  const sel=document.getElementById('map-tour-sel');
+  sel.innerHTML='<option value="current">Aktuelle Tour (keine)</option>';
 };
 
 // ACTIVITIES
@@ -502,50 +518,52 @@ function renderActivities(){
   el.innerHTML=activities.map(a=>`<button class="act-btn${currentActivity&&currentActivity.id===a.id?' running':''}" onclick="window.startActivity('${a.id}')"><span class="act-dot" style="background:${a.color}"></span><span>${a.name}</span>${currentActivity&&currentActivity.id===a.id?'<span class="pulse-dot" style="margin-left:auto"></span>':'<span style="margin-left:auto;opacity:.4;font-size:18px">›</span>'}</button>`).join('');
 }
 
-window.startActivity=async function(id){
+window.startActivity=function(id){
   if(!activeTour){alert('Bitte zuerst eine Tour starten.');return;}
-  if(currentActivity)await stopActivitySilent();
+  if(currentActivity)stopActivitySilent();
   const act=activities.find(a=>a.id===id);if(!act)return;
   currentActivity=act;currentStart=new Date();
   document.getElementById('btn-stop').disabled=false;
   const sb=document.getElementById('status-bar');sb.className='status running';
-  sb.innerHTML=`<span class="pulse-dot"></span><span style="width:8px;height:8px;border-radius:50%;background:${act.color};flex-shrink:0"></span>${act.name}`;
+  sb.innerHTML=`<span class="pulse-dot"></span><span style="width:8px;height:8px;border-radius:50%;background:${act.color};flex-shrink:0"></span>${act.name} läuft...`;
   renderActivities();
 };
 
-window.stopActivity=async function(){await stopActivitySilent();};
+window.stopActivity=function(){stopActivitySilent();};
 
-async function stopActivitySilent(){
-  if(!currentActivity)return;
+function stopActivitySilent(){
+  if(!currentActivity||!activeTour)return;
   const end=new Date(),dur=Math.round((end-currentStart)/1000);
-  const entry={activity:currentActivity.name,color:currentActivity.color,start:currentStart.toISOString(),end:end.toISOString(),dur,date:todayKey(),projectId:activeTour?activeTour.projectId:'',projectName:activeTour?activeTour.projectName:'',tourName:activeTour?activeTour.name:'',archived:false,userId:currentUser.uid,userEmail:currentUser.email};
-  const ref=await addDoc(collection(db,'users',currentUser.uid,'entries'),entry);
-  const newEntry={id:ref.id,...entry};
-  todayEntries.push(newEntry);
-  if(activeTour){activeTour.entryIds.push(ref.id);localStorage.setItem('activeTour_'+currentUser.uid,JSON.stringify(activeTour));}
+  const entry={activity:currentActivity.name,color:currentActivity.color,start:currentStart.toISOString(),end:end.toISOString(),dur};
+  activeTour.entries.push(entry);
+  saveTourLocally();
   currentActivity=null;currentStart=null;
   document.getElementById('btn-stop').disabled=true;
   const sb=document.getElementById('status-bar');sb.className='status';
-  sb.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="16" height="16"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Keine Aufzeichnung aktiv`;
+  sb.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="16" height="16"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Tätigkeit wählen`;
   renderActivities();renderTimeline();updateMetrics();
 }
 
 window.pinLocation=function(){
-  if(!navigator.geolocation){alert('GPS nicht verfügbar');return;}
-  navigator.geolocation.getCurrentPosition(async pos=>{
-    const p={lat:pos.coords.latitude,lng:pos.coords.longitude,ts:new Date().toISOString(),label:'Stopp '+(pins.length+1),date:todayKey()};
-    const ref=await addDoc(collection(db,'users',currentUser.uid,'pins'),p);
-    pins.push({id:ref.id,...p});updateMetrics();if(map)updateMap();
+  if(!navigator.geolocation||!activeTour){return;}
+  navigator.geolocation.getCurrentPosition(pos=>{
+    const p={lat:pos.coords.latitude,lng:pos.coords.longitude,ts:new Date().toISOString(),label:'Stopp '+(activeTour.pins.length+1)};
+    activeTour.pins.push(p);saveTourLocally();
+    updateMetrics();if(map)renderMapTour();
   },()=>alert('Standort nicht verfügbar'));
 };
 
 function startGPS(){
   if(!navigator.geolocation||trackInterval)return;
-  const add=async pos=>{
-    const pt={lat:pos.coords.latitude,lng:pos.coords.longitude,ts:new Date().toISOString()};
-    gpsPoints.push(pt);
-    await addDoc(collection(db,'users',currentUser.uid,'gps'),{points:[pt],date:todayKey(),userId:currentUser.uid});
-    updateKm();if(map&&document.getElementById('panel-map').classList.contains('active'))updateMap();
+  const add=pos=>{
+    if(!activeTour)return;
+    const pt={lat:pos.coords.latitude,lng:pos.coords.longitude,ts:new Date().toISOString(),
+      activity:currentActivity?currentActivity.name:'',
+      color:currentActivity?currentActivity.color:'#7878a0'};
+    activeTour.gpsPoints.push(pt);
+    saveTourLocally();
+    updateKm();
+    if(map&&document.getElementById('panel-map').classList.contains('active'))renderMapTour();
   };
   navigator.geolocation.getCurrentPosition(add,()=>{});
   trackInterval=setInterval(()=>navigator.geolocation.getCurrentPosition(add,()=>{}),15000);
@@ -554,28 +572,32 @@ function stopGPS(){clearInterval(trackInterval);trackInterval=null;}
 
 function haversine(a,b){const R=6371,r=Math.PI/180,dLat=(b.lat-a.lat)*r,dLon=(b.lng-a.lng)*r,x=Math.sin(dLat/2)**2+Math.cos(a.lat*r)*Math.cos(b.lat*r)*Math.sin(dLon/2)**2;return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));}
 function totalKm(pts){let km=0;for(let i=1;i<pts.length;i++)km+=haversine(pts[i-1],pts[i]);return km;}
-function updateKm(){document.getElementById('m-km').textContent=totalKm(gpsPoints).toFixed(1);}
+function updateKm(){if(activeTour)document.getElementById('m-km').textContent=totalKm(activeTour.gpsPoints||[]).toFixed(1);}
 function updateMetrics(){
-  const s=todayEntries.reduce((a,e)=>a+e.dur,0),h=Math.floor(s/3600),m=Math.floor((s%3600)/60);
+  if(!activeTour){document.getElementById('m-work').textContent='0:00';document.getElementById('m-km').textContent='0.0';document.getElementById('m-stops').textContent='0';return;}
+  const s=(activeTour.entries||[]).reduce((a,e)=>a+e.dur,0),h=Math.floor(s/3600),m=Math.floor((s%3600)/60);
   document.getElementById('m-work').textContent=h+':'+(m<10?'0':'')+m;
-  updateKm();document.getElementById('m-stops').textContent=pins.length;
+  updateKm();
+  document.getElementById('m-stops').textContent=(activeTour.pins||[]).length;
 }
 
 function renderTimeline(){
   const el=document.getElementById('timeline');
-  if(!todayEntries.length){el.innerHTML='<div class="no-data">Noch keine Einträge heute.</div>';return;}
-  el.innerHTML=[...todayEntries].reverse().map(e=>{
+  const entries=activeTour?activeTour.entries||[]:[];
+  if(!entries.length){el.innerHTML='<div class="no-data">Noch keine Einträge.</div>';return;}
+  el.innerHTML=[...entries].reverse().map((e,i)=>{
     const h=Math.floor(e.dur/3600),m=Math.floor((e.dur%3600)/60),s=e.dur%60;
     const dur=h>0?h+'h'+m+'m':m>0?m+'m'+s+'s':s+'s';
     const t=new Date(e.start).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
-    return`<div class="t-entry"><span style="width:8px;height:8px;border-radius:50%;background:${e.color};flex-shrink:0"></span><span class="t-time">${t}</span><span class="t-name">${e.activity}</span>${e.tourName?`<span class="t-proj" title="${e.tourName}">${e.tourName}</span>`:''}<span class="t-dur">${dur}</span><button class="t-del" onclick="window.delEntry('${e.id}')">×</button></div>`;
+    const realIdx=entries.length-1-i;
+    return`<div class="t-entry"><span style="width:8px;height:8px;border-radius:50%;background:${e.color};flex-shrink:0"></span><span class="t-time">${t}</span><span class="t-name">${e.activity}</span><span class="t-dur">${dur}</span><button class="t-del" onclick="window.delEntry(${realIdx})">×</button></div>`;
   }).join('');
 }
 
-window.delEntry=async function(id){
-  await deleteDoc(doc(db,'users',currentUser.uid,'entries',id));
-  todayEntries=todayEntries.filter(e=>e.id!==id);
-  renderTimeline();updateMetrics();
+window.delEntry=function(idx){
+  if(!activeTour)return;
+  activeTour.entries.splice(idx,1);
+  saveTourLocally();renderTimeline();updateMetrics();
 };
 
 // MAP
@@ -584,37 +606,80 @@ function initMap(){
   map=L.map('map',{zoomControl:true,attributionControl:false});
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(map);
   L.control.attribution({prefix:'© <a href="https://openstreetmap.org">OpenStreetMap</a>'}).addTo(map);
-  routeLayer=L.layerGroup().addTo(map);pinLayer=L.layerGroup().addTo(map);
+  routeLayer=L.layerGroup().addTo(map);
+  pinLayer=L.layerGroup().addTo(map);
   map.setView([51.5,10.5],6);
+  // Populate tour selector
+  updateMapTourSelector();
 }
-function updateMap(){
+
+function updateMapTourSelector(){
+  const sel=document.getElementById('map-tour-sel');
+  const current=activeTour?`<option value="current">Aktuelle Tour: ${activeTour.name}</option>`:`<option value="current">Aktuelle Tour (keine aktiv)</option>`;
+  // Load past tours for selector from reportTours
+  const pastOpts=reportTours.map(t=>`<option value="${t.id}">${t.date} · ${t.name}</option>`).join('');
+  sel.innerHTML=current+pastOpts;
+}
+
+window.renderMapTour=function(){
   if(!map)return;
   routeLayer.clearLayers();pinLayer.clearLayers();
-  if(gpsPoints.length>1){
-    const ll=gpsPoints.map(p=>[p.lat,p.lng]);
-    L.polyline(ll,{color:'#7c6ff7',weight:10,opacity:0.15}).addTo(routeLayer);
-    L.polyline(ll,{color:'#7c6ff7',weight:3,opacity:0.9}).addTo(routeLayer);
-    L.circleMarker(ll[0],{radius:7,fillColor:'#2ec9a0',color:'#fff',weight:2,fillOpacity:1}).bindPopup('Start').addTo(routeLayer);
-    L.circleMarker(ll[ll.length-1],{radius:7,fillColor:'#7c6ff7',color:'#fff',weight:2,fillOpacity:1}).bindPopup('Aktuell').addTo(routeLayer);
-    map.fitBounds(L.latLngBounds(ll).pad(0.15));
-    document.getElementById('map-info').textContent=gpsPoints.length+' Punkte · '+totalKm(gpsPoints).toFixed(1)+' km';
-  } else {
-    document.getElementById('map-info').textContent='Keine GPS-Daten';
-    if(navigator.geolocation)navigator.geolocation.getCurrentPosition(pos=>map.setView([pos.coords.latitude,pos.coords.longitude],14),()=>{});
+  document.getElementById('map-legend').style.display='none';
+  const sel=document.getElementById('map-tour-sel').value;
+  let pts=[],pins=[],tourName='';
+  if(sel==='current'&&activeTour){
+    pts=activeTour.gpsPoints||[];pins=activeTour.pins||[];tourName=activeTour.name;
+  } else if(sel!=='current'){
+    const t=reportTours.find(x=>x.id===sel);
+    if(t){pts=t.gpsPoints||[];pins=t.pins||[];tourName=t.name;}
   }
+  if(pts.length<2){
+    document.getElementById('map-info').textContent=tourName?tourName+' – Keine GPS-Punkte':'Keine GPS-Daten';
+    if(navigator.geolocation)navigator.geolocation.getCurrentPosition(p=>map.setView([p.coords.latitude,p.coords.longitude],14),()=>{});
+    setTimeout(()=>map&&map.invalidateSize(),100);return;
+  }
+  // Draw colored segments by activity
+  const actColors={};
+  for(let i=1;i<pts.length;i++){
+    const a=pts[i-1],b=pts[i];
+    const color=a.color||'#7878a0';
+    if(!actColors[a.activity||'—'])actColors[a.activity||'—']=color;
+    // Glow
+    L.polyline([[a.lat,a.lng],[b.lat,b.lng]],{color,weight:10,opacity:0.15}).addTo(routeLayer);
+    // Line
+    L.polyline([[a.lat,a.lng],[b.lat,b.lng]],{color,weight:3.5,opacity:0.9}).addTo(routeLayer);
+  }
+  // Start & end markers
+  const ll=pts.map(p=>[p.lat,p.lng]);
+  L.circleMarker(ll[0],{radius:7,fillColor:'#2ec9a0',color:'#fff',weight:2,fillOpacity:1}).bindPopup('Start: '+new Date(pts[0].ts).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})).addTo(routeLayer);
+  L.circleMarker(ll[ll.length-1],{radius:7,fillColor:'#e05555',color:'#fff',weight:2,fillOpacity:1}).bindPopup('Ende').addTo(routeLayer);
+  // Pins
   pins.forEach(p=>{
-    const icon=L.divIcon({html:`<div style="background:#f07040;width:12px;height:12px;border-radius:50%;border:2px solid #fff"></div>`,iconSize:[12,12],iconAnchor:[6,6],className:''});
-    L.marker([p.lat,p.lng],{icon}).bindPopup(p.label).addTo(pinLayer);
+    const icon=L.divIcon({html:`<div style="background:#f07040;width:12px;height:12px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 4px rgba(0,0,0,.5)"></div>`,iconSize:[12,12],iconAnchor:[6,6],className:''});
+    L.marker([p.lat,p.lng],{icon}).bindPopup(p.label+'<br>'+new Date(p.ts).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})).addTo(pinLayer);
   });
+  map.fitBounds(L.latLngBounds(ll).pad(0.12));
+  document.getElementById('map-info').textContent=(tourName||'')+' · '+pts.length+' Punkte · '+totalKm(pts).toFixed(1)+' km';
+  // Legend
+  if(Object.keys(actColors).length>0){
+    const leg=document.getElementById('map-legend');
+    leg.style.display='flex';
+    leg.innerHTML=Object.entries(actColors).map(([name,color])=>`<div class="legend-row"><div class="legend-line" style="background:${color}"></div><span>${name}</span></div>`).join('');
+  }
   setTimeout(()=>map&&map.invalidateSize(),100);
-}
-window.centerMap=function(){
-  if(!map)return;
-  if(gpsPoints.length>1)map.fitBounds(L.latLngBounds(gpsPoints.map(p=>[p.lat,p.lng])).pad(0.15));
-  else if(navigator.geolocation)navigator.geolocation.getCurrentPosition(pos=>map.setView([pos.coords.latitude,pos.coords.longitude],15),()=>{});
 };
 
-// REPORT - uses 'tours' collection, simple query
+window.centerMap=function(){
+  if(!map)return;
+  const sel=document.getElementById('map-tour-sel').value;
+  let pts=[];
+  if(sel==='current'&&activeTour)pts=activeTour.gpsPoints||[];
+  else{const t=reportTours.find(x=>x.id===sel);if(t)pts=t.gpsPoints||[];}
+  if(pts.length>1)map.fitBounds(L.latLngBounds(pts.map(p=>[p.lat,p.lng])).pad(0.12));
+  else if(navigator.geolocation)navigator.geolocation.getCurrentPosition(p=>map.setView([p.coords.latitude,p.coords.longitude],15),()=>{});
+};
+
+// REPORT
 function initReportDates(){
   const today=todayKey();
   document.getElementById('report-from').value=today.slice(0,8)+'01';
@@ -625,37 +690,72 @@ window.loadReport=async function(){
   if(!currentUser)return;
   const from=document.getElementById('report-from').value||todayKey();
   const to=document.getElementById('report-to').value||todayKey();
-  // Simple query by date range only - no composite index needed
   const snap=await getDocs(query(collection(db,'users',currentUser.uid,'tours'),where('date','>=',from),where('date','<=',to)));
-  reportTours=snap.docs.map(d=>({id:d.id,...d.data()})).filter(t=>!t.archived).sort((a,b)=>b.date.localeCompare(a.date));
+  reportTours=snap.docs.map(d=>({id:d.id,...d.data()})).filter(t=>!t.archived).sort((a,b)=>b.date.localeCompare(a.date)||b.startTime.localeCompare(a.startTime));
   renderReport();
+  updateMapTourSelector();
 };
 
 function renderReport(){
   const tours=reportTours;
   const totalDur=tours.reduce((a,t)=>a+t.dur,0);
+  const totalKmVal=tours.reduce((a,t)=>a+(t.km||0),0);
   const h=Math.floor(totalDur/3600),m=Math.floor((totalDur%3600)/60);
   document.getElementById('r-tours').textContent=tours.length;
   document.getElementById('r-total').textContent=h+'h'+m;
-  document.getElementById('r-entries').textContent=tours.reduce((a,t)=>a+t.entryCount,0);
-  const rb=document.getElementById('report-body');
-  if(!tours.length){rb.innerHTML='<div class="no-data">Keine Touren in diesem Zeitraum.</div>';return;}
-  rb.innerHTML=tours.map(t=>{
+  document.getElementById('r-km').textContent=totalKmVal.toFixed(1);
+  const rl=document.getElementById('report-list');
+  if(!tours.length){rl.innerHTML='<div class="no-data">Keine Touren in diesem Zeitraum.</div>';return;}
+  rl.innerHTML=tours.map((t,i)=>{
     const h=Math.floor(t.dur/3600),m=Math.floor((t.dur%3600)/60);
-    return`<div style="padding:10px 0;border-bottom:1px solid var(--border)">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <div style="font-weight:500;font-size:13px">${t.name}</div>
-        <div style="font-family:'DM Mono',monospace;font-size:12px;color:var(--muted)">${h}h ${m}m</div>
+    const actSummary=(t.entries||[]).reduce((acc,e)=>{if(!acc[e.activity])acc[e.activity]={dur:0,color:e.color};acc[e.activity].dur+=e.dur;return acc;},{});
+    const actHtml=Object.entries(actSummary).map(([name,v])=>{
+      const ah=Math.floor(v.dur/3600),am=Math.floor((v.dur%3600)/60),as2=v.dur%60;
+      const adur=ah>0?ah+'h'+am+'m':am>0?am+'m'+as2+'s':as2+'s';
+      return`<div class="td-row"><span style="width:8px;height:8px;border-radius:50%;background:${v.color};flex-shrink:0"></span><span style="flex:1">${name}</span><span style="color:var(--muted);font-family:'DM Mono',monospace;font-size:11px">${adur}</span></div>`;
+    }).join('');
+    const gpsCount=(t.gpsPoints||[]).length;
+    return`<div class="tour-card" onclick="toggleTourDetail(${i})">
+      <div class="tour-card-top">
+        <div><div class="tour-card-name">${t.name}</div><div class="tour-card-sub">${t.date} · ${t.projectName||'Kein Projekt'}</div></div>
+        <div class="tour-card-time">${h}h ${m}m</div>
       </div>
-      <div style="font-size:11px;color:var(--muted);margin-top:3px">${t.date} · ${t.projectName||'Kein Projekt'} · ${t.km||0} km · ${t.entryCount} Einträge</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px">${t.km||0} km · ${t.entryCount||0} Eintr. · ${gpsCount} GPS-Punkte</div>
+      <div class="tour-detail" id="td-${i}">
+        <div style="font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">Tätigkeiten</div>
+        ${actHtml||'<div style="color:var(--muted);font-size:12px">Keine Einträge</div>'}
+        <button class="btn btn-accent" onclick="event.stopPropagation();showTourOnMap('${t.id}')" style="width:100%;justify-content:center;margin-top:6px;padding:8px;font-size:12px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="13" height="13" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/></svg>Auf Karte anzeigen
+        </button>
+      </div>
     </div>`;
   }).join('');
 }
 
+window.toggleTourDetail=function(i){
+  const el=document.getElementById('td-'+i);
+  el.classList.toggle('open');
+};
+
+window.showTourOnMap=function(tourId){
+  showTab('map');
+  setTimeout(()=>{
+    const sel=document.getElementById('map-tour-sel');
+    sel.value=tourId;
+    renderMapTour();
+  },200);
+};
+
 window.exportCSV=function(){
   if(!reportTours.length){alert('Erst Bericht laden.');return;}
-  const rows=[['Datum','Tour','Projekt','Start','Ende','Dauer_min','km','Einträge'],
-    ...reportTours.map(t=>[t.date,t.name,t.projectName||'',new Date(t.startTime).toLocaleTimeString('de-DE'),new Date(t.endTime).toLocaleTimeString('de-DE'),Math.round(t.dur/60),t.km||0,t.entryCount])];
+  const rows=[['Datum','Tour','Projekt','Start','Ende','Dauer_min','km','Einträge']];
+  reportTours.forEach(t=>{
+    rows.push([t.date,t.name,t.projectName||'',new Date(t.startTime).toLocaleTimeString('de-DE'),new Date(t.endTime).toLocaleTimeString('de-DE'),Math.round(t.dur/60),t.km||0,t.entryCount]);
+    (t.entries||[]).forEach(e=>{
+      const h=Math.floor(e.dur/3600),m=Math.floor((e.dur%3600)/60);
+      rows.push(['',e.activity,'','','',(e.dur/60).toFixed(1),'','']);
+    });
+  });
   const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(rows.map(r=>r.join(';')).join('\n'));a.download='touren-export.csv';a.click();
 };
 
@@ -666,12 +766,11 @@ function renderSettings(){
   else el.innerHTML=activities.map(a=>`<div class="act-edit"><span style="width:9px;height:9px;border-radius:50%;background:${a.color};flex-shrink:0"></span><input class="inp" type="text" value="${a.name}" onchange="window.renameAct('${a.id}',this.value)" style="flex:1;padding:6px 8px;font-size:13px"><button class="btn danger" onclick="window.removeAct('${a.id}')" style="padding:5px 9px;font-size:13px">×</button></div>`).join('');
   renderColorPick();
 }
-function renderColorPick(){
-  document.getElementById('color-row').innerHTML=COLORS.map(c=>`<div class="c-opt${selectedColor===c?' sel':''}" style="background:${c}" onclick="window.selColor('${c}')"></div>`).join('');
-}
+function renderColorPick(){document.getElementById('color-row').innerHTML=COLORS.map(c=>`<div class="c-opt${selectedColor===c?' sel':''}" style="background:${c}" onclick="window.selColor('${c}')"></div>`).join('');}
 window.selColor=function(c){selectedColor=c;renderColorPick();};
 window.addActivity=async function(){
   const name=document.getElementById('new-act-name').value.trim();if(!name)return;
+  const {addDoc:ad,collection:col}=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
   const ref=await addDoc(collection(db,'users',currentUser.uid,'activities'),{name,color:selectedColor});
   activities.push({id:ref.id,name,color:selectedColor});
   document.getElementById('new-act-name').value='';renderSettings();renderActivities();
