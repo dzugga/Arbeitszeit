@@ -432,12 +432,19 @@ window.closeTourModal=function(){document.getElementById('tour-modal').style.dis
 window.confirmStartTour=function(){
   const name=document.getElementById('tour-name-inp').value.trim();
   if(!name){alert('Bitte Tour-Bezeichnung eingeben.');return;}
+  // Hard reset — alle vorherigen Daten löschen
+  stopGPS();
+  currentActivity=null;currentStart=null;
+  document.getElementById('btn-stop').disabled=true;
+  document.getElementById('status-bar').className='status';
+  document.getElementById('status-bar').innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="16" height="16"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Tätigkeit wählen`;
   const projId=document.getElementById('tour-project-sel').value;
   const proj=projects.find(p=>p.id===projId);
+  // Neue Tour — komplett leer
   activeTour={id:'t'+Date.now(),name,projectId:projId,projectName:proj?proj.name:'',startTime:new Date().toISOString(),entries:[],gpsPoints:[],pins:[]};
   localStorage.setItem(LS_KEY(),JSON.stringify(activeTour));
   document.getElementById('tour-modal').style.display='none';
-  updateTourUI();renderActivities();
+  updateTourUI();renderActivities();renderTimeline();updateMetrics();
   startGPS();
 };
 
