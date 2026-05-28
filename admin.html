@@ -265,24 +265,43 @@ async function loadDashboard(){
   const today=todayKey();
   let todayTours=[];
   const workers=allUsers.filter(u=>u.role!=='admin');
+  document.getElementById('d-users').textContent=workers.length;
+  document.getElementById('d-projects').textContent=allProjects.length;
+
   for(const u of workers){
-    // Simple query - only by date, no composite index needed
-    const snap=await getDocs(query(collection(db,'users',u.id,'tours'),where('date','==',today)));
-    todayTours.push(...snap.docs.map(d=>({id:d.id,...d.data(),userName:u.name||u.email})).filter(t=>!t.archived));
+    try{
+      // Nur nach Datum filtern — kein zusammengesetzter Index nötig
+      const snap=await getDocs(query(collection(db,'users',u.id,'tours'),where('date','==',today)));
+      const tours=snap.docs.map(d=>({id:d.id,...d.data(),userName:u.name||u.email}))
+        .filter(t=>t.archived!==true); // archived kann undefined sein
+      todayTours.push(...tours);
+    }catch(e){console.warn('Tour-Abfrage für',u.email,'fehlgeschlagen:',e);}
   }
+
   document.getElementById('d-tours').textContent=todayTours.length;
-  const totalSec=todayTours.reduce((a,t)=>a+t.dur,0);
-  document.getElementById('d-hours').textContent=Math.floor(totalSec/3600)+'h'+Math.floor((totalSec%3600)/60)+'m';
+  const totalSec=todayTours.reduce((a,t)=>a+(t.dur||0),0);
+  const h=Math.floor(totalSec/3600),m=Math.floor((totalSec%3600)/60);
+  document.getElementById('d-hours').textContent=h+'h '+m+'m';
 
   const dt=document.getElementById('dash-tours');
-  if(!todayTours.length){dt.innerHTML='<div style="text-align:center;padding:14px;color:var(--muted);font-size:13px">Heute noch keine abgeschlossenen Touren.</div>';}
-  else dt.innerHTML=todayTours.map(t=>{
-    const h=Math.floor(t.dur/3600),m=Math.floor((t.dur%3600)/60);
-    return`<div class="tour-row"><div class="tour-row-top"><div style="font-weight:500;font-size:13px">${t.name}</div><div style="font-family:'DM Mono',monospace;font-size:12px;color:var(--muted)">${h}h ${m}m</div></div><div class="tour-row-sub">${t.userName} · ${t.projectName||'Kein Projekt'} · ${t.km||0} km · ${t.entryCount} Einträge</div></div>`;
-  }).join('');
-
-  // Active tours from localStorage check - just show a note
-  document.getElementById('dash-active').innerHTML=`<div style="font-size:13px;color:var(--muted)">Aktive Touren sind auf den Geräten der Mitarbeiter sichtbar und werden nach Abschluss hier angezeigt.</div>`;
+  if(!todayTours.length){
+    dt.innerHTML='<div style="text-align:center;padding:14px;color:var(--muted);font-size:13px">Heute noch keine abgeschlossenen Touren.</div>';
+  } else {
+    todayTours.sort((a,b)=>(b.startTime||'').localeCompare(a.startTime||''));
+    dt.innerHTML=todayTours.map(t=>{
+      const th=Math.floor((t.dur||0)/3600),tm=Math.floor(((t.dur||0)%3600)/60),ts=(t.dur||0)%60;
+      const dur=th>0?th+'h '+tm+'m '+ts+'s':tm>0?tm+'m '+ts+'s':ts+'s';
+      const startT=t.startTime?new Date(t.startTime).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}):'—';
+      return`<div class="tour-row">
+        <div class="tour-row-top">
+          <div style="font-weight:500;font-size:13px">${t.name}</div>
+          <div style="font-family:'DM Mono',monospace;font-size:12px;color:var(--accent)">${dur}</div>
+        </div>
+        <div class="tour-row-sub">${t.userName} · ${t.projectName||'Kein Projekt'} · ${t.km||0} km · Start ${startT}</div>
+      </div>`;
+    }).join('');
+  }
+  document.getElementById('dash-active').innerHTML=`<div style="font-size:13px;color:var(--muted)">Aktive Touren laufen auf den Geräten der Mitarbeiter und erscheinen hier nach Abschluss.</div>`;
 }
 
 function renderUsersTable(){
@@ -344,26 +363,32 @@ window.loadTours=async function(){
   allTours=[];
   const workers=userId?allUsers.filter(u=>u.id===userId):allUsers.filter(u=>u.role!=='admin');
   for(const u of workers){
-    const snap=await getDocs(query(collection(db,'users',u.id,'tours'),where('date','>=',from),where('date','<=',to)));
-    allTours.push(...snap.docs.map(d=>({id:d.id,...d.data(),userName:u.name||u.email,userId:u.id})).filter(t=>!t.archived));
+    try{
+      const snap=await getDocs(query(collection(db,'users',u.id,'tours'),where('date','>=',from),where('date','<=',to)));
+      allTours.push(...snap.docs.map(d=>({id:d.id,...d.data(),userName:u.name||u.email,userId:u.id})).filter(t=>t.archived!==true));
+    }catch(e){console.warn('loadTours Fehler für',u.email,e);}
   }
   if(projId)allTours=allTours.filter(t=>t.projectId===projId);
-  allTours.sort((a,b)=>b.date.localeCompare(a.date)||b.startTime.localeCompare(a.startTime));
+  allTours.sort((a,b)=>b.date.localeCompare(a.date)||(b.startTime||'').localeCompare(a.startTime||''));
   renderToursTable();
 };
 
+function fmtDur(sec){const h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),s=sec%60;if(h>0)return h+'h '+m+'m '+s+'s';if(m>0)return m+'m '+s+'s';return s+'s';}
+
 function renderToursTable(){
   const tours=allTours;
-  const totalDur=tours.reduce((a,t)=>a+t.dur,0);
+  const totalDur=tours.reduce((a,t)=>a+(t.dur||0),0);
   const totalKm=tours.reduce((a,t)=>a+(t.km||0),0);
   document.getElementById('t-count').textContent=tours.length;
-  document.getElementById('t-hours').textContent=Math.floor(totalDur/3600)+'h'+Math.floor((totalDur%3600)/60)+'m';
+  document.getElementById('t-hours').textContent=fmtDur(totalDur);
   document.getElementById('t-km').textContent=totalKm.toFixed(1);
   const el=document.getElementById('tours-table');
   if(!tours.length){el.innerHTML='<div style="text-align:center;padding:16px;color:var(--muted)">Keine Touren.</div>';return;}
   el.innerHTML=`<table><thead><tr><th>Datum</th><th>Tour</th><th>Mitarbeiter</th><th>Projekt</th><th>Dauer</th><th>km</th><th>Eintr.</th><th></th></tr></thead><tbody>`+
-    tours.map(t=>{const h=Math.floor(t.dur/3600),m=Math.floor((t.dur%3600)/60);
-    return`<tr><td style="font-family:'DM Mono',monospace;font-size:11px">${t.date}</td><td style="font-weight:500">${t.name}</td><td style="color:var(--muted)">${t.userName}</td><td style="color:var(--muted)">${t.projectName||'—'}</td><td style="font-family:'DM Mono',monospace;font-size:11px">${h}h${m}m</td><td style="font-family:'DM Mono',monospace;font-size:11px">${t.km||0}</td><td>${t.entryCount}</td><td><button class="btn btn-danger" style="font-size:11px;padding:3px 8px" onclick="window.archiveTour('${t.userId}','${t.id}')">Archiv</button></td></tr>`;
+    tours.map(t=>{
+      const dur=fmtDur(t.dur||0);
+      const startT=t.startTime?new Date(t.startTime).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}):'—';
+      return`<tr><td style="font-family:'DM Mono',monospace;font-size:11px">${t.date}<br><span style="color:var(--muted)">${startT}</span></td><td style="font-weight:500">${t.name}</td><td style="color:var(--muted)">${t.userName}</td><td style="color:var(--muted)">${t.projectName||'—'}</td><td style="font-family:'DM Mono',monospace;font-size:11px">${dur}</td><td style="font-family:'DM Mono',monospace;font-size:11px">${t.km||0}</td><td>${t.entryCount||0}</td><td><button class="btn btn-danger" style="font-size:11px;padding:3px 8px" onclick="window.archiveTour('${t.userId}','${t.id}')">Archiv</button></td></tr>`;
     }).join('')+'</tbody></table>';
 }
 
