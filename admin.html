@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arbeitszeit · Admin</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0f0f1a;--bg2:#1a1a2e;--bg3:#252540;--card:#1e1e35;--border:#2e2e50;--text:#e8e8f0;--muted:#7878a0;--accent:#7c6ff7;--accent2:#5b53d4;--green:#2ec9a0;--orange:#f07040;--red:#e05555;--font:'DM Sans',sans-serif}
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;min-height:100vh}
+
+/* LOGIN */
+#login-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:16px;padding:32px}
+.login-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;width:100%;max-width:360px;display:flex;flex-direction:column;gap:12px}
+.login-box h2{font-size:18px;font-weight:600;margin-bottom:4px}
+.login-tag{display:inline-block;background:#2a1a1a;color:var(--orange);border:1px solid #5a3030;border-radius:6px;font-size:11px;padding:3px 8px;margin-bottom:8px}
+.inp{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg3);color:var(--text);font-family:var(--font);font-size:14px}
+.inp:focus{outline:none;border-color:var(--accent)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer}
+.btn:hover{background:var(--bg3)}
+.btn-accent{background:var(--accent2);border-color:var(--accent);color:#fff;width:100%;justify-content:center;padding:11px}
+.btn-accent:hover{background:var(--accent)}
+.btn-danger{color:var(--red);border-color:#5a2a2a;background:#1e1010}
+.err{font-size:12px;color:var(--red);min-height:14px}
+
+/* LAYOUT */
+#admin-app{display:none;min-height:100vh;flex-direction:column}
+.topbar{display:flex;align-items:center;gap:12px;padding:14px 24px;background:var(--bg2);border-bottom:1px solid var(--border)}
+.topbar h1{font-size:16px;font-weight:600;flex:1}
+.admin-badge{font-size:11px;background:#2a1520;color:var(--orange);border:1px solid #5a3030;padding:3px 10px;border-radius:20px}
+.logout-btn{background:none;border:1px solid var(--border);color:var(--muted);padding:6px 12px;border-radius:8px;font-family:var(--font);font-size:12px;cursor:pointer}
+.logout-btn:hover{color:var(--text)}
+
+.main{display:flex;gap:0;flex:1}
+.sidebar{width:200px;background:var(--bg2);border-right:1px solid var(--border);padding:16px 0;flex-shrink:0}
+.sidebar-btn{display:flex;align-items:center;gap:10px;padding:10px 20px;background:none;border:none;color:var(--muted);font-family:var(--font);font-size:13px;cursor:pointer;width:100%;text-align:left}
+.sidebar-btn:hover{color:var(--text);background:var(--bg3)}
+.sidebar-btn.active{color:var(--accent);background:rgba(124,111,247,.08)}
+.sidebar-btn svg{width:16px;height:16px;stroke-width:2;flex-shrink:0}
+
+.content{flex:1;padding:24px;overflow-y:auto}
+.section{display:none;flex-direction:column;gap:16px}
+.section.active{display:flex}
+.section-header{display:flex;align-items:center;justify-content:space-between}
+.section-header h2{font-size:16px;font-weight:600}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px}
+.metrics-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.metric{background:var(--bg3);border-radius:10px;padding:12px;text-align:center}
+.metric-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.metric-value{font-size:22px;font-weight:600;font-family:'DM Mono',monospace}
+
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);font-weight:500;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+td{padding:9px 10px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+
+.badge{display:inline-block;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:500}
+.badge-active{background:rgba(46,201,160,.15);color:var(--green)}
+.badge-inactive{background:var(--bg3);color:var(--muted)}
+.badge-admin{background:rgba(240,112,64,.15);color:var(--orange)}
+
+.form-row{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap}
+.form-group{display:flex;flex-direction:column;gap:4px;flex:1;min-width:140px}
+.form-group label{font-size:11px;color:var(--muted)}
+.filter-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.filter-row select,.filter-row input[type=date]{padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);font-family:var(--font);font-size:13px;color-scheme:dark}
+
+.spinner{width:24px;height:24px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:40px auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px;vertical-align:middle}
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-box">
+    <span class="login-tag">Admin-Bereich</span>
+    <h2>Arbeitszeit Admin</h2>
+    <input class="inp" type="email" id="a-email" placeholder="Admin E-Mail" autocomplete="email">
+    <input class="inp" type="password" id="a-pw" placeholder="Passwort" autocomplete="current-password">
+    <div class="err" id="a-err"></div>
+    <button class="btn btn-accent" onclick="doLogin()">Anmelden</button>
+  </div>
+</div>
+
+<div id="admin-app">
+  <div class="topbar">
+    <h1>Arbeitszeit · Admin</h1>
+    <span class="admin-badge">Admin</span>
+    <span id="admin-email" style="font-size:12px;color:var(--muted)"></span>
+    <button class="logout-btn" onclick="doLogout()">Abmelden</button>
+  </div>
+  <div class="main">
+    <div class="sidebar">
+      <button class="sidebar-btn active" id="sb-dashboard" onclick="showSection('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Dashboard
+      </button>
+      <button class="sidebar-btn" id="sb-users" onclick="showSection('users')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Mitarbeiter
+      </button>
+      <button class="sidebar-btn" id="sb-projects" onclick="showSection('projects')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>Projekte
+      </button>
+      <button class="sidebar-btn" id="sb-entries" onclick="showSection('entries')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>Einträge
+      </button>
+      <button class="sidebar-btn" id="sb-archive" onclick="showSection('archive')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>Archiv
+      </button>
+    </div>
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div class="section active" id="section-dashboard">
+        <div class="section-header"><h2>Übersicht</h2><span id="dash-date" style="font-size:12px;color:var(--muted)"></span></div>
+        <div class="metrics-row">
+          <div class="metric"><div class="metric-label">Mitarbeiter</div><div class="metric-value" id="d-users">—</div></div>
+          <div class="metric"><div class="metric-label">Projekte</div><div class="metric-value" id="d-projects">—</div></div>
+          <div class="metric"><div class="metric-label">Einträge heute</div><div class="metric-value" id="d-today">—</div></div>
+          <div class="metric"><div class="metric-label">Stunden heute</div><div class="metric-value" id="d-hours">—</div></div>
+        </div>
+        <div class="card">
+          <div style="font-size:12px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px">Heutige Aktivität</div>
+          <div id="dash-activity"></div>
+        </div>
+      </div>
+
+      <!-- USERS -->
+      <div class="section" id="section-users">
+        <div class="section-header">
+          <h2>Mitarbeiter</h2>
+          <button class="btn btn-accent" onclick="showAddUser()">+ Mitarbeiter anlegen</button>
+        </div>
+        <div class="card" id="add-user-form" style="display:none">
+          <div style="font-size:12px;font-weight:500;color:var(--muted);margin-bottom:10px">Neuen Mitarbeiter anlegen</div>
+          <div class="form-row">
+            <div class="form-group"><label>E-Mail</label><input class="inp" type="email" id="u-email" placeholder="name@firma.de"></div>
+            <div class="form-group"><label>Passwort</label><input class="inp" type="password" id="u-pw" placeholder="mind. 6 Zeichen"></div>
+            <div class="form-group"><label>Name</label><input class="inp" type="text" id="u-name" placeholder="Max Mustermann"></div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <button class="btn btn-accent" onclick="createUser()" style="width:auto">Anlegen</button>
+            <button class="btn" onclick="document.getElementById('add-user-form').style.display='none'">Abbrechen</button>
+          </div>
+          <div class="err" id="u-err" style="margin-top:6px"></div>
+        </div>
+        <div class="card"><div id="users-table"><div class="spinner"></div></div></div>
+      </div>
+
+      <!-- PROJECTS -->
+      <div class="section" id="section-projects">
+        <div class="section-header"><h2>Projekte</h2></div>
+        <div class="card">
+          <div class="form-row" style="margin-bottom:12px">
+            <div class="form-group"><label>Projektname</label><input class="inp" type="text" id="p-name" placeholder="z.B. Kunde Müller"></div>
+            <div class="form-group"><label>Beschreibung (optional)</label><input class="inp" type="text" id="p-desc" placeholder="Kurzbeschreibung"></div>
+            <button class="btn btn-accent" onclick="addProject()" style="margin-top:18px;white-space:nowrap">+ Hinzufügen</button>
+          </div>
+        </div>
+        <div class="card"><div id="projects-table"><div class="spinner"></div></div></div>
+      </div>
+
+      <!-- ENTRIES -->
+      <div class="section" id="section-entries">
+        <div class="section-header"><h2>Alle Einträge</h2></div>
+        <div class="card">
+          <div class="filter-row">
+            <input type="date" id="e-from">
+            <span style="color:var(--muted);font-size:12px">bis</span>
+            <input type="date" id="e-to">
+            <select id="e-user"><option value="">Alle Mitarbeiter</option></select>
+            <select id="e-proj"><option value="">Alle Projekte</option></select>
+            <button class="btn btn-accent" onclick="loadEntries()">Laden</button>
+            <button class="btn" onclick="exportAllCSV()">CSV Export</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="metrics-row" style="grid-template-columns:repeat(3,1fr);margin-bottom:12px">
+            <div class="metric"><div class="metric-label">Einträge</div><div class="metric-value" id="e-count">—</div></div>
+            <div class="metric"><div class="metric-label">Gesamt-Stunden</div><div class="metric-value" id="e-hours">—</div></div>
+            <div class="metric"><div class="metric-label">Mitarbeiter</div><div class="metric-value" id="e-users">—</div></div>
+          </div>
+          <div id="entries-table"></div>
+        </div>
+      </div>
+
+      <!-- ARCHIVE -->
+      <div class="section" id="section-archive">
+        <div class="section-header"><h2>Archiv</h2></div>
+        <div class="card">
+          <div class="filter-row">
+            <select id="ar-user"><option value="">Alle Mitarbeiter</option></select>
+            <button class="btn btn-accent" onclick="loadArchive()">Laden</button>
+            <button class="btn" onclick="exportArchiveCSV()">CSV Export</button>
+          </div>
+        </div>
+        <div class="card"><div id="archive-table"><div class="no-data" style="text-align:center;padding:20px;color:var(--muted)">Filter anwenden und Laden klicken.</div></div></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getFirestore, collection, doc, addDoc, getDocs, setDoc, updateDoc, deleteDoc, query, where, orderBy, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAaE6IXHg3NhCx0qtv60n-DF3zJOKjDGDo",
+  authDomain: "arbeitszeit-171a4.firebaseapp.com",
+  projectId: "arbeitszeit-171a4",
+  storageBucket: "arbeitszeit-171a4.firebasestorage.app",
+  messagingSenderId: "1041845504771",
+  appId: "1:1041845504771:web:47fa99683880edd617b736"
+};
+
+const fbApp = initializeApp(firebaseConfig);
+const auth = getAuth(fbApp);
+const db = getFirestore(fbApp);
+
+let allUsers=[], allProjects=[], currentEntries=[], archiveEntries=[];
+
+function todayKey(){return new Date().toISOString().slice(0,10)}
+
+window.doLogin=async function(){
+  const email=document.getElementById('a-email').value.trim();
+  const pw=document.getElementById('a-pw').value;
+  document.getElementById('a-err').textContent='';
+  try{
+    const cred=await signInWithEmailAndPassword(auth,email,pw);
+    // Check admin role
+    const uDoc=await getDoc(doc(db,'userProfiles',cred.user.uid));
+    if(!uDoc.exists()||uDoc.data().role!=='admin'){
+      await signOut(auth);
+      document.getElementById('a-err').textContent='Kein Admin-Zugriff.';
+      return;
+    }
+  } catch(e){document.getElementById('a-err').textContent='Falsche Zugangsdaten.';}
+};
+
+window.doLogout=async function(){await signOut(auth);};
+
+onAuthStateChanged(auth, async user=>{
+  if(user){
+    const uDoc=await getDoc(doc(db,'userProfiles',user.uid));
+    if(!uDoc.exists()||uDoc.data().role!=='admin'){await signOut(auth);return;}
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('admin-app').style.display='flex';
+    document.getElementById('admin-app').style.flexDirection='column';
+    document.getElementById('admin-email').textContent=user.email;
+    document.getElementById('dash-date').textContent=new Date().toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'});
+    await loadAll();
+  } else {
+    document.getElementById('login-screen').style.display='flex';
+    document.getElementById('admin-app').style.display='none';
+  }
+});
+
+async function loadAll(){
+  // Load users
+  const uSnap=await getDocs(collection(db,'userProfiles'));
+  allUsers=uSnap.docs.map(d=>({id:d.id,...d.data()}));
+  // Load projects
+  const pSnap=await getDocs(query(collection(db,'projects'),orderBy('name')));
+  allProjects=pSnap.docs.map(d=>({id:d.id,...d.data()}));
+  populateFilters();
+  renderUsersTable();
+  renderProjectsTable();
+  await loadDashboard();
+}
+
+function populateFilters(){
+  const uOpts=allUsers.map(u=>`<option value="${u.id}">${u.name||u.email}</option>`).join('');
+  const pOpts=allProjects.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
+  ['e-user','ar-user'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='<option value="">Alle Mitarbeiter</option>'+uOpts;});
+  const ep=document.getElementById('e-proj');if(ep)ep.innerHTML='<option value="">Alle Projekte</option>'+pOpts;
+  const today=todayKey(),monthStart=today.slice(0,8)+'01';
+  ['e-from'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=monthStart;});
+  ['e-to'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=today;});
+}
+
+async function loadDashboard(){
+  document.getElementById('d-users').textContent=allUsers.filter(u=>u.role!=='admin').length;
+  document.getElementById('d-projects').textContent=allProjects.length;
+  const today=todayKey();
+  let todayAll=[];
+  for(const u of allUsers.filter(x=>x.role!=='admin')){
+    const snap=await getDocs(query(collection(db,'users',u.id,'entries'),where('date','==',today),where('archived','==',false)));
+    todayAll.push(...snap.docs.map(d=>({...d.data(),userName:u.name||u.email})));
+  }
+  document.getElementById('d-today').textContent=todayAll.length;
+  const totalSec=todayAll.reduce((a,e)=>a+e.dur,0);
+  const h=Math.floor(totalSec/3600),m=Math.floor((totalSec%3600)/60);
+  document.getElementById('d-hours').textContent=h+'h'+m+'m';
+  const da=document.getElementById('dash-activity');
+  if(!todayAll.length){da.innerHTML='<div style="text-align:center;padding:16px;color:var(--muted);font-size:13px">Heute noch keine Einträge.</div>';return;}
+  da.innerHTML=`<table><thead><tr><th>Mitarbeiter</th><th>Tätigkeit</th><th>Projekt</th><th>Start</th><th>Dauer</th></tr></thead><tbody>`+
+    todayAll.slice(0,20).map(e=>{const h=Math.floor(e.dur/3600),m=Math.floor((e.dur%3600)/60),s=e.dur%60;const dur=h>0?h+'h'+m+'m':m>0?m+'m'+s+'s':s+'s';return`<tr><td>${e.userName}</td><td><span class="dot" style="background:${e.color}"></span>${e.activity}</td><td style="color:var(--muted)">${e.projectName||'—'}</td><td style="font-family:'DM Mono',monospace;font-size:11px">${new Date(e.start).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})}</td><td style="font-family:'DM Mono',monospace;font-size:11px">${dur}</td></tr>`;}).join('')+'</tbody></table>';
+}
+
+function renderUsersTable(){
+  const el=document.getElementById('users-table');
+  const workers=allUsers.filter(u=>u.role!=='admin');
+  if(!workers.length){el.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted)">Noch keine Mitarbeiter.</div>';return;}
+  el.innerHTML=`<table><thead><tr><th>Name</th><th>E-Mail</th><th>Status</th><th>Aktionen</th></tr></thead><tbody>`+
+    workers.map(u=>`<tr><td style="font-weight:500">${u.name||'—'}</td><td style="color:var(--muted)">${u.email}</td><td><span class="badge ${u.active!==false?'badge-active':'badge-inactive'}">${u.active!==false?'Aktiv':'Inaktiv'}</span></td><td><button class="btn" style="font-size:11px;padding:4px 8px" onclick="window.toggleUser('${u.id}',${u.active!==false})">${u.active!==false?'Deaktivieren':'Aktivieren'}</button></td></tr>`).join('')+'</tbody></table>';
+}
+
+function renderProjectsTable(){
+  const el=document.getElementById('projects-table');
+  if(!allProjects.length){el.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted)">Noch keine Projekte.</div>';return;}
+  el.innerHTML=`<table><thead><tr><th>Name</th><th>Beschreibung</th><th>Erstellt</th><th>Aktionen</th></tr></thead><tbody>`+
+    allProjects.map(p=>`<tr><td style="font-weight:500">${p.name}</td><td style="color:var(--muted)">${p.desc||'—'}</td><td style="color:var(--muted);font-size:11px">${p.created||'—'}</td><td><button class="btn btn-danger" style="font-size:11px;padding:4px 8px" onclick="window.deleteProject('${p.id}')">Löschen</button></td></tr>`).join('')+'</tbody></table>';
+}
+
+window.showAddUser=function(){
+  const el=document.getElementById('add-user-form');
+  el.style.display=el.style.display==='none'?'block':'none';
+};
+
+window.createUser=async function(){
+  const email=document.getElementById('u-email').value.trim();
+  const pw=document.getElementById('u-pw').value;
+  const name=document.getElementById('u-name').value.trim();
+  document.getElementById('u-err').textContent='';
+  if(!email||!pw||!name){document.getElementById('u-err').textContent='Alle Felder ausfüllen.';return;}
+  try{
+    const cred=await createUserWithEmailAndPassword(auth,email,pw);
+    await setDoc(doc(db,'userProfiles',cred.user.uid),{email,name,role:'user',active:true,created:todayKey()});
+    allUsers.push({id:cred.user.uid,email,name,role:'user',active:true});
+    document.getElementById('add-user-form').style.display='none';
+    document.getElementById('u-email').value='';document.getElementById('u-pw').value='';document.getElementById('u-name').value='';
+    renderUsersTable();populateFilters();
+    document.getElementById('d-users').textContent=allUsers.filter(u=>u.role!=='admin').length;
+    alert('Mitarbeiter '+name+' angelegt!');
+  } catch(e){document.getElementById('u-err').textContent='Fehler: '+e.message;}
+};
+
+window.toggleUser=async function(id,isActive){
+  await updateDoc(doc(db,'userProfiles',id),{active:!isActive});
+  const u=allUsers.find(x=>x.id===id);if(u)u.active=!isActive;
+  renderUsersTable();
+};
+
+window.addProject=async function(){
+  const name=document.getElementById('p-name').value.trim();
+  const desc=document.getElementById('p-desc').value.trim();
+  if(!name){alert('Name eingeben.');return;}
+  const ref=await addDoc(collection(db,'projects'),{name,desc,created:todayKey()});
+  allProjects.push({id:ref.id,name,desc,created:todayKey()});
+  allProjects.sort((a,b)=>a.name.localeCompare(b.name));
+  document.getElementById('p-name').value='';document.getElementById('p-desc').value='';
+  renderProjectsTable();populateFilters();
+  document.getElementById('d-projects').textContent=allProjects.length;
+};
+
+window.deleteProject=async function(id){
+  if(!confirm('Projekt löschen? Einträge bleiben erhalten.'))return;
+  await deleteDoc(doc(db,'projects',id));
+  allProjects=allProjects.filter(p=>p.id!==id);
+  renderProjectsTable();populateFilters();
+};
+
+window.loadEntries=async function(){
+  const from=document.getElementById('e-from').value;
+  const to=document.getElementById('e-to').value;
+  const userId=document.getElementById('e-user').value;
+  const projId=document.getElementById('e-proj').value;
+  currentEntries=[];
+  const usersToQuery=userId?allUsers.filter(u=>u.id===userId):allUsers.filter(u=>u.role!=='user'||true);
+  for(const u of allUsers.filter(u=>u.role!=='admin')){
+    if(userId&&u.id!==userId)continue;
+    const snap=await getDocs(query(collection(db,'users',u.id,'entries'),where('date','>=',from),where('date','<=',to),where('archived','==',false)));
+    currentEntries.push(...snap.docs.map(d=>({id:d.id,...d.data(),userName:u.name||u.email,userId:u.id})));
+  }
+  if(projId)currentEntries=currentEntries.filter(e=>e.projectId===projId);
+  currentEntries.sort((a,b)=>a.date.localeCompare(b.date)||a.start.localeCompare(b.start));
+  renderEntriesTable(currentEntries);
+};
+
+function renderEntriesTable(entries){
+  const s=entries.reduce((a,e)=>a+e.dur,0);
+  document.getElementById('e-count').textContent=entries.length;
+  document.getElementById('e-hours').textContent=Math.floor(s/3600)+'h'+Math.floor((s%3600)/60)+'m';
+  document.getElementById('e-users').textContent=new Set(entries.map(e=>e.userId)).size;
+  const el=document.getElementById('entries-table');
+  if(!entries.length){el.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted)">Keine Einträge.</div>';return;}
+  el.innerHTML=`<table><thead><tr><th>Datum</th><th>Mitarbeiter</th><th>Tätigkeit</th><th>Projekt</th><th>Start</th><th>Ende</th><th>Dauer</th></tr></thead><tbody>`+
+    entries.slice(0,200).map(e=>{const h=Math.floor(e.dur/3600),m=Math.floor((e.dur%3600)/60),s=e.dur%60;const dur=h>0?h+'h'+m+'m':m>0?m+'m'+s+'s':s+'s';
+    return`<tr><td style="font-family:'DM Mono',monospace;font-size:11px">${e.date}</td><td>${e.userName}</td><td><span class="dot" style="background:${e.color}"></span>${e.activity}</td><td style="color:var(--muted)">${e.projectName||'—'}</td><td style="font-family:'DM Mono',monospace;font-size:11px">${new Date(e.start).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})}</td><td style="font-family:'DM Mono',monospace;font-size:11px">${new Date(e.end).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})}</td><td style="font-family:'DM Mono',monospace;font-size:11px">${dur}</td></tr>`;}).join('')+'</tbody></table>';
+}
+
+window.loadArchive=async function(){
+  const userId=document.getElementById('ar-user').value;
+  archiveEntries=[];
+  for(const u of allUsers.filter(u=>u.role!=='admin')){
+    if(userId&&u.id!==userId)continue;
+    const snap=await getDocs(query(collection(db,'users',u.id,'entries'),where('archived','==',true)));
+    archiveEntries.push(...snap.docs.map(d=>({id:d.id,...d.data(),userName:u.name||u.email,userId:u.id})));
+  }
+  archiveEntries.sort((a,b)=>b.date.localeCompare(a.date));
+  const el=document.getElementById('archive-table');
+  if(!archiveEntries.length){el.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted)">Keine archivierten Einträge.</div>';return;}
+  renderEntriesTable2(archiveEntries,el);
+};
+
+function renderEntriesTable2(entries,el){
+  const s=entries.reduce((a,e)=>a+e.dur,0);
+  el.innerHTML=`<div style="display:flex;gap:16px;margin-bottom:12px;font-size:13px;color:var(--muted)">${entries.length} Einträge · ${Math.floor(s/3600)}h${Math.floor((s%3600)/60)}m Gesamt</div>`+
+    `<table><thead><tr><th>Datum</th><th>Mitarbeiter</th><th>Tätigkeit</th><th>Projekt</th><th>Dauer</th></tr></thead><tbody>`+
+    entries.slice(0,300).map(e=>{const h=Math.floor(e.dur/3600),m=Math.floor((e.dur%3600)/60);const dur=h>0?h+'h'+m+'m':m+'m';
+    return`<tr><td style="font-family:'DM Mono',monospace;font-size:11px">${e.date}</td><td>${e.userName}</td><td><span class="dot" style="background:${e.color}"></span>${e.activity}</td><td style="color:var(--muted)">${e.projectName||'—'}</td><td style="font-family:'DM Mono',monospace;font-size:11px">${dur}</td></tr>`;}).join('')+'</tbody></table>';
+}
+
+window.exportAllCSV=function(){
+  if(!currentEntries.length){alert('Erst laden.');return;}
+  const rows=[['Datum','Mitarbeiter','Tätigkeit','Projekt','Start','Ende','Dauer_min'],
+    ...currentEntries.map(e=>[e.date,e.userName,e.activity,e.projectName||'',new Date(e.start).toLocaleTimeString('de-DE'),new Date(e.end).toLocaleTimeString('de-DE'),Math.round(e.dur/60)])];
+  dl(rows,'arbeitszeit-alle.csv');
+};
+window.exportArchiveCSV=function(){
+  if(!archiveEntries.length){alert('Erst laden.');return;}
+  const rows=[['Datum','Mitarbeiter','Tätigkeit','Projekt','Start','Ende','Dauer_min'],
+    ...archiveEntries.map(e=>[e.date,e.userName,e.activity,e.projectName||'',new Date(e.start).toLocaleTimeString('de-DE'),new Date(e.end).toLocaleTimeString('de-DE'),Math.round(e.dur/60)])];
+  dl(rows,'arbeitszeit-archiv.csv');
+};
+function dl(rows,name){const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(rows.map(r=>r.join(';')).join('\n'));a.download=name;a.click();}
+
+window.showSection=function(id){
+  document.querySelectorAll('.sidebar-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('sb-'+id).classList.add('active');
+  document.getElementById('section-'+id).classList.add('active');
+};
+</script>
+</body>
+</html>
