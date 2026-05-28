@@ -582,28 +582,47 @@ function stopActivitySilent(){
 window.pinLocation=function(){
   if(!navigator.geolocation||!activeTour){return;}
   navigator.geolocation.getCurrentPosition(pos=>{
-    const p={lat:pos.coords.latitude,lng:pos.coords.longitude,ts:new Date().toISOString(),label:'Stopp '+(activeTour.pins.length+1)};
+    const p={lat:pos.coords.latitude,lng:pos.coords.longitude,ts:new Date().toISOString(),acc:Math.round(pos.coords.accuracy),label:'Stopp '+(activeTour.pins.length+1)};
     activeTour.pins.push(p);saveTourLocally();
     updateMetrics();if(map)renderMapTour();
-  },()=>alert('Standort nicht verfügbar'));
+  },()=>alert('Standort nicht verfügbar'),{enableHighAccuracy:true,maximumAge:0,timeout:10000});
 };
 
 function startGPS(){
   if(!navigator.geolocation||trackInterval)return;
+  let lastTs=0;
   const add=pos=>{
     if(!activeTour)return;
-    const pt={lat:pos.coords.latitude,lng:pos.coords.longitude,ts:new Date().toISOString(),
+    // Genauigkeitsfilter: Punkte schlechter als 40m verwerfen
+    if(pos.coords.accuracy>40)return;
+    // Mindestabstand 3 Sekunden zwischen Punkten
+    const now=Date.now();
+    if(now-lastTs<3000)return;
+    lastTs=now;
+    const pt={
+      lat:pos.coords.latitude,
+      lng:pos.coords.longitude,
+      ts:new Date().toISOString(),
+      acc:Math.round(pos.coords.accuracy),
       activity:currentActivity?currentActivity.name:'',
-      color:currentActivity?currentActivity.color:'#7878a0'};
+      color:currentActivity?currentActivity.color:'#7878a0'
+    };
     activeTour.gpsPoints.push(pt);
     saveTourLocally();
     updateKm();
     if(map&&document.getElementById('panel-map').classList.contains('active'))renderMapTour();
   };
-  navigator.geolocation.getCurrentPosition(add,()=>{});
-  trackInterval=setInterval(()=>navigator.geolocation.getCurrentPosition(add,()=>{}),5000);
+  const err=e=>{console.warn('GPS error:',e.code,e.message);};
+  // watchPosition meldet sich automatisch bei jeder neuen präzisen Position
+  trackInterval=navigator.geolocation.watchPosition(add, err, {
+    enableHighAccuracy:true,  // echtes GPS, kein WLAN-Fallback
+    maximumAge:0,             // keine gecachten Positionen
+    timeout:10000
+  });
 }
-function stopGPS(){clearInterval(trackInterval);trackInterval=null;}
+function stopGPS(){
+  if(trackInterval!=null){navigator.geolocation.clearWatch(trackInterval);trackInterval=null;}
+}
 
 function formatDur(sec){
   const h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),s=sec%60;
@@ -692,8 +711,8 @@ window.renderMapTour=function(){
   }
   // Start & end markers
   const ll=pts.map(p=>[p.lat,p.lng]);
-  L.circleMarker(ll[0],{radius:7,fillColor:'#2ec9a0',color:'#fff',weight:2,fillOpacity:1}).bindPopup('Start: '+new Date(pts[0].ts).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})).addTo(routeLayer);
-  L.circleMarker(ll[ll.length-1],{radius:7,fillColor:'#e05555',color:'#fff',weight:2,fillOpacity:1}).bindPopup('Ende').addTo(routeLayer);
+  L.circleMarker(ll[0],{radius:7,fillColor:'#2ec9a0',color:'#fff',weight:2,fillOpacity:1}).bindPopup('Start: '+new Date(pts[0].ts).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit',second:'2-digit'})+(pts[0].acc?' · ±'+pts[0].acc+'m':'')).addTo(routeLayer);
+  L.circleMarker(ll[ll.length-1],{radius:7,fillColor:'#e05555',color:'#fff',weight:2,fillOpacity:1}).bindPopup('Ende: '+new Date(pts[pts.length-1].ts).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit',second:'2-digit'})+(pts[pts.length-1].acc?' · ±'+pts[pts.length-1].acc+'m':'')).addTo(routeLayer);
   // Pins
   pins.forEach(p=>{
     const icon=L.divIcon({html:`<div style="background:#f07040;width:12px;height:12px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 4px rgba(0,0,0,.5)"></div>`,iconSize:[12,12],iconAnchor:[6,6],className:''});
