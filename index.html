@@ -461,7 +461,7 @@ window.showEndTour=function(){
   (activeTour.entries||[]).forEach(e=>{if(!byAct[e.activity])byAct[e.activity]={dur:0,color:e.color};byAct[e.activity].dur+=e.dur;});
   const actRows=Object.entries(byAct).map(([name,v])=>{
     const ah=Math.floor(v.dur/3600),am=Math.floor((v.dur%3600)/60),as2=v.dur%60;
-    const adur=ah>0?ah+'h'+am+'m':am>0?am+'m'+as2+'s':as2+'s';
+    const adur=formatDur(v.dur);
     return`<div class="ts-act"><span style="width:9px;height:9px;border-radius:50%;background:${v.color};flex-shrink:0"></span><span style="flex:1">${name}</span><span style="color:var(--muted);font-family:'DM Mono',monospace;font-size:11px">${adur}</span></div>`;
   }).join('');
   document.getElementById('end-summary').innerHTML=`
@@ -573,9 +573,16 @@ function startGPS(){
     if(map&&document.getElementById('panel-map').classList.contains('active'))renderMapTour();
   };
   navigator.geolocation.getCurrentPosition(add,()=>{});
-  trackInterval=setInterval(()=>navigator.geolocation.getCurrentPosition(add,()=>{}),15000);
+  trackInterval=setInterval(()=>navigator.geolocation.getCurrentPosition(add,()=>{}),5000);
 }
 function stopGPS(){clearInterval(trackInterval);trackInterval=null;}
+
+function formatDur(sec){
+  const h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),s=sec%60;
+  if(h>0)return h+'h '+m+'m '+s+'s';
+  if(m>0)return m+'m '+s+'s';
+  return s+'s';
+}
 
 function haversine(a,b){const R=6371,r=Math.PI/180,dLat=(b.lat-a.lat)*r,dLon=(b.lng-a.lng)*r,x=Math.sin(dLat/2)**2+Math.cos(a.lat*r)*Math.cos(b.lat*r)*Math.sin(dLon/2)**2;return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));}
 function totalKm(pts){let km=0;for(let i=1;i<pts.length;i++)km+=haversine(pts[i-1],pts[i]);return km;}
@@ -593,9 +600,8 @@ function renderTimeline(){
   const entries=activeTour?activeTour.entries||[]:[];
   if(!entries.length){el.innerHTML='<div class="no-data">Noch keine Einträge.</div>';return;}
   el.innerHTML=[...entries].reverse().map((e,i)=>{
-    const h=Math.floor(e.dur/3600),m=Math.floor((e.dur%3600)/60),s=e.dur%60;
-    const dur=h>0?h+'h'+m+'m':m>0?m+'m'+s+'s':s+'s';
-    const t=new Date(e.start).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+    const dur=formatDur(e.dur);
+    const t=new Date(e.start).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
     const realIdx=entries.length-1-i;
     return`<div class="t-entry"><span style="width:8px;height:8px;border-radius:50%;background:${e.color};flex-shrink:0"></span><span class="t-time">${t}</span><span class="t-name">${e.activity}</span><span class="t-dur">${dur}</span><button class="t-del" onclick="window.delEntry(${realIdx})">×</button></div>`;
   }).join('');
@@ -709,23 +715,22 @@ function renderReport(){
   const totalKmVal=tours.reduce((a,t)=>a+(t.km||0),0);
   const h=Math.floor(totalDur/3600),m=Math.floor((totalDur%3600)/60);
   document.getElementById('r-tours').textContent=tours.length;
-  document.getElementById('r-total').textContent=h+'h'+m;
+  document.getElementById('r-total').textContent=formatDur(totalDur);
   document.getElementById('r-km').textContent=totalKmVal.toFixed(1);
   const rl=document.getElementById('report-list');
   if(!tours.length){rl.innerHTML='<div class="no-data">Keine Touren in diesem Zeitraum.</div>';return;}
   rl.innerHTML=tours.map((t,i)=>{
-    const h=Math.floor(t.dur/3600),m=Math.floor((t.dur%3600)/60);
+    const tourDur=formatDur(t.dur);
     const actSummary=(t.entries||[]).reduce((acc,e)=>{if(!acc[e.activity])acc[e.activity]={dur:0,color:e.color};acc[e.activity].dur+=e.dur;return acc;},{});
     const actHtml=Object.entries(actSummary).map(([name,v])=>{
-      const ah=Math.floor(v.dur/3600),am=Math.floor((v.dur%3600)/60),as2=v.dur%60;
-      const adur=ah>0?ah+'h'+am+'m':am>0?am+'m'+as2+'s':as2+'s';
+      const adur=formatDur(v.dur);
       return`<div class="td-row"><span style="width:8px;height:8px;border-radius:50%;background:${v.color};flex-shrink:0"></span><span style="flex:1">${name}</span><span style="color:var(--muted);font-family:'DM Mono',monospace;font-size:11px">${adur}</span></div>`;
     }).join('');
     const gpsCount=(t.gpsPoints||[]).length;
     return`<div class="tour-card" onclick="toggleTourDetail(${i})">
       <div class="tour-card-top">
         <div><div class="tour-card-name">${t.name}</div><div class="tour-card-sub">${t.date} · ${t.projectName||'Kein Projekt'}</div></div>
-        <div class="tour-card-time">${h}h ${m}m</div>
+        <div class="tour-card-time">${tourDur}</div>
       </div>
       <div style="font-size:11px;color:var(--muted);margin-top:4px">${t.km||0} km · ${t.entryCount||0} Eintr. · ${gpsCount} GPS-Punkte</div>
       <div class="tour-detail" id="td-${i}">
